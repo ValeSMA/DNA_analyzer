@@ -1,6 +1,16 @@
 #include "client.h"
  
-char *request() 
+ // Temporal socket test
+void main()
+{
+    char *filename;
+    request(filename);
+    printf("New file %s", filename);
+    free(filename);
+}
+
+
+int request(char *request) 
 { 
     int sock = 0, valread; 
     struct sockaddr_in serv_addr; 
@@ -27,12 +37,12 @@ char *request()
     } 
 
     char *filename = (char*)malloc(sizeof(char)*MAX_FILENAME_SIZE);
-    *filename = "IDLE";
+    filename[0] = '0';
 
-    while(*filename == "IDLE")
+    while(filename[0] == '0')
     {
         // Request
-        send(sock,REQUEST_CMD,sizeof(char),0);
+        send(sock,(char*)REQUEST_CMD,sizeof(char),0);
         printf("Request sent\n");
 
         sleep(3);
@@ -44,5 +54,5 @@ char *request()
         filename_size = strlen(filename);
     }
 
-    return filename;
+    return 0;
 } 
