@@ -10,6 +10,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <string.h>
 
 #define MAX_EVENTS 1024  // Maximum number of events to process
 #define LEN_NAME 16  // Assuming that the length of the filename won't exceed 16 bytes
@@ -195,14 +196,11 @@ int main()
                             if(comp == 0) {
                                 fprintf(fp, "The file %s was created.\n", event->name );
 
-                                char command = 0;
-                                recv(new_socket, &command, 1, 0);
+                                // char command = 0;
+                                // recv(new_socket, &command, 1, 0);
 
-                                if(command == '1')
-                                {
-                                    send(new_socket, event->name, strlen(event->name), 0);
-                                }
-
+                                send(new_socket, event->name, strlen(event->name), 0);
+                                
                                 // if(send(conn_fd , event->name , strlen(event->name), 0) < 0)
                                 // {
                                 //     fprintf(fp, "Send failed\n");

@@ -3,10 +3,10 @@
  // Temporal socket test
 void main()
 {
-    char *filename;
+    char filename[255];
+
     request(filename);
     printf("New file %s", filename);
-    free(filename);
 }
 
 
@@ -36,9 +36,6 @@ int request(char *request)
         return S_CONNECTION_ERROR; 
     } 
 
-    char *filename = (char*)malloc(sizeof(char)*MAX_FILENAME_SIZE);
-    filename[0] = '0';
-
     //>>>>>>
     char *hello = "Hello from client"; 
     char buffer[1024] = {0}; 
@@ -48,20 +45,10 @@ int request(char *request)
     printf("%s\n",buffer ); 
     //<<<<<<<
 
-    while(filename[0] == '0')
-    {
-        // Request
-        send(sock,(char*)REQUEST_CMD,sizeof(char),0);
-        printf("Request sent\n");
+    valread = read( sock, buffer, 1024);
+    printf("%s\n",buffer);
 
-        sleep(3);
-
-        // Recept
-        int filename_size = 0;
-        int rcount = recv(sock, &filename, MAX_FILENAME_SIZE, 0);
-
-        filename_size = strlen(filename);
-    }
+    strcpy(request,buffer);
 
     return 0;
 } 
