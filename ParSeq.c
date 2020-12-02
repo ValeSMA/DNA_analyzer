@@ -31,6 +31,11 @@ void main()
         struct index_tracker matches = {NULL,0};
 
         int total_matches = 0;
+
+        long long total = 0;
+        long long ref_total = refsize;
+        int no_matches = 0;
+
         for(int i=0; i<nseqs; i++)
         {
             clock_t t;    
@@ -54,16 +59,23 @@ void main()
             //printf("Windowing time: %f\n",(double)t/(CLOCKS_PER_SEC / 1000));
 
             //t = clock();
-            matching(reference_seq,pattern,pattern_size,&windows,&matches);
+            matching(reference_seq,pattern,refsize,pattern_size,&windows,&matches);
             //t = clock()-t;
             //printf("Matching time: %f\n",(double)t/(CLOCKS_PER_SEC / 1000));
 
             for(int i=0; i<matches.count; i++)
+            {
                 printf("Found a match at index %d\n", matches.idx[i]);
+                total += pattern_size+1;
+            }
 
             if(matches.count>0)
             {
                 total_matches++;
+            }
+            else 
+            {
+                no_matches++;
             }
             
             free(windows.idx);
@@ -76,6 +88,9 @@ void main()
         g = clock() - g;
         printf("Total time: %f miliseconds\n",(double)g/(CLOCKS_PER_SEC / 1000));
         printf("%d mapped sequences\n",total_matches);
+        printf("%d not mapped sequences\n",no_matches);
+        printf("%lld Total characters matched\n", total);
+        printf("%lld percent of the reference coverered", (total/refsize)*100);
 
         for(int i=0; i<nseqs; i++)
             free(seqs[i].seq);

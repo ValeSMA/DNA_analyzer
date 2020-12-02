@@ -112,7 +112,7 @@ void windowing(int min_index, unsigned char *text, unsigned int text_size, unsig
     }
 }
 
-void matching(unsigned char *text, unsigned char *pattern, unsigned int pattern_size, struct index_tracker *windows, struct index_tracker *matches)
+void matching(unsigned char *text, unsigned char *pattern, unsigned int text_size, unsigned int pattern_size, struct index_tracker *windows, struct index_tracker *matches)
 {
     int num_match = 0;
     int k = pattern_size % WLEN;
@@ -133,7 +133,7 @@ void matching(unsigned char *text, unsigned char *pattern, unsigned int pattern_
             int nequal = 0;
             for(int j=c; j<w; j++)
             {
-                if(pattern[c] != text[s+c])
+                if(pattern[j] != text[s+j])
                     nequal = 1;
             }
 

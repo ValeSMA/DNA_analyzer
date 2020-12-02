@@ -45,7 +45,7 @@ void windowing(int min_index, unsigned char *text, unsigned int text_size,
         unsigned char *pattern, unsigned int pattern_size, struct index_tracker *windows);
 
 /* Prints the first indexes for all ocurrences of pattern in text */
-void matching(unsigned char *text, unsigned char *pattern, unsigned int pattern_size,
+void matching(unsigned char *text, unsigned char *pattern, unsigned int text_size, unsigned int pattern_size,
          struct index_tracker *windows, struct index_tracker *matches);
 
 /* Prints the global frequency table */
