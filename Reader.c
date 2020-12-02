@@ -49,7 +49,7 @@ struct sequence * read_seq_file(char *filename, int *nlines)
     int count = 0;
     char c;
 
-    char prefixes[255]="./sequences/";
+    char prefixes[255]="./Experimentos/";
 
     fp = fopen(strcat(prefixes,filename), "r");
 

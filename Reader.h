@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define REFERENCE_FILE "./sequences/cerevisiae_processed.txt"
-#define TEST_SEQ "texto"
+#define REFERENCE_FILE "./References/cerevisiae_processed.txt"
 
 /* Returns a pointer to a buffer with the reference sequence */
 char* read_reference();

@@ -1,5 +1,6 @@
 #include "Reader.h"
 #include "P_LFMP.h"
+#include "client.h"
 #include <time.h>
 
 extern unsigned int freq_tab[WCONT][WLEN+1];
@@ -11,7 +12,13 @@ void main()
     struct sequence *seqs;
     int nseqs = 0;
 
-    seqs = read_seq_file("s_cerevisia.seq",&nseqs);
+    char filename[255];
+
+    open_connection();
+    request(filename);
+    printf("%s",filename);
+    
+    seqs = read_seq_file(filename,&nseqs);
     fill_frequency_table(reference_seq,refsize);
 
     clock_t g;

@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-g -c
-SOURCES=ParSeq.c Reader.c P_LFMP.c 
+SOURCES=ParSeq.c client.c Reader.c P_LFMP.c 
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=ParSequencer
 
