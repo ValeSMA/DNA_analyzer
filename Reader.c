@@ -51,6 +51,8 @@ struct sequence * read_seq_file(char *filename, int *nlines)
 
     char prefixes[255]="./Experimentos/";
 
+    printf("Opening %s:",filename);
+
     fp = fopen(strcat(prefixes,filename), "r");
 
     if(!fp)
@@ -61,7 +63,6 @@ struct sequence * read_seq_file(char *filename, int *nlines)
 
     for(c=getc(fp); c!= EOF; c=getc(fp))
     {
-        
         if(c=='\n')
             count++;
     }
