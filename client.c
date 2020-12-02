@@ -39,6 +39,15 @@ int request(char *request)
     char *filename = (char*)malloc(sizeof(char)*MAX_FILENAME_SIZE);
     filename[0] = '0';
 
+    //>>>>>>
+    char *hello = "Hello from client"; 
+    char buffer[1024] = {0}; 
+    send(sock , hello , strlen(hello) , 0 ); 
+    printf("Hello message sent\n"); 
+    valread = read( sock , buffer, 1024); 
+    printf("%s\n",buffer ); 
+    //<<<<<<<
+
     while(filename[0] == '0')
     {
         // Request

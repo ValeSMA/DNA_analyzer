@@ -15,7 +15,8 @@
 #define LEN_NAME 16  // Assuming that the length of the filename won't exceed 16 bytes
 #define EVENT_SIZE  ( sizeof (struct inotify_event) ) //size of one event
 #define BUF_LEN     ( MAX_EVENTS * ( EVENT_SIZE + LEN_NAME )) // buffer to store the data of events
-#define MAX_SUB 20 // Maximum number of subdirectories 
+#define MAX_SUB 20 // Maximum number of subdirectories
+#define PORT 8080
 
 int fd, wd[MAX_SUB];
 
@@ -65,11 +66,6 @@ int main()
     printf("Starting daemonize\n");
     daemonize();
 
-    //SOCKET
-	int listen_fd = 0, conn_fd = 0;
-    struct sockaddr_in server, client;
-    char sendBuffer[100];
-
     int dirr = 1;
     char *path_to_be_watched[MAX_SUB];
     path_to_be_watched[0] = "./Experimentos";
@@ -77,7 +73,6 @@ int main()
     FILE *fp= NULL;
     fp = fopen ("Log.txt", "w+");
          
-
     // Step 1. Initialize inotify
     fd = inotify_init();
 
@@ -93,41 +88,98 @@ int main()
             fprintf(fp, "Watching : %s\n", path_to_be_watched[0]);
     }
 
-    //Create a socket
-	if((listen_fd = socket(AF_INET , SOCK_STREAM , 0 )) == -1)
-	{
-		fprintf(fp, "Could not create socket\n");
-        return -1;
-	}
 
-	fprintf(fp, "Socket created.\n");
-    memset(&server, '0', sizeof(server));
-    memset(sendBuffer, '0', sizeof(sendBuffer));
+
+
+
+
+
+
+
+
+
+
+        int server_fd, new_socket, valread; 
+        struct sockaddr_in address; 
+        int opt = 1; 
+        int addrlen = sizeof(address); 
+        char buffer[1024] = {0}; 
+        char *hello = "Hello from server"; 
+        
+        // Creating socket file descriptor 
+        if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
+        { 
+            perror("socket failed"); 
+            exit(EXIT_FAILURE); 
+        } 
+        
+        // Forcefully attaching socket to the port 8080 
+        if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
+                                                    &opt, sizeof(opt))) 
+        { 
+            perror("setsockopt"); 
+            exit(EXIT_FAILURE); 
+        } 
+        address.sin_family = AF_INET; 
+        address.sin_addr.s_addr = INADDR_ANY; 
+        address.sin_port = htons( PORT ); 
+        
+        // Forcefully attaching socket to the port 8080 
+        if (bind(server_fd, (struct sockaddr *)&address,  
+                                    sizeof(address))<0) 
+        { 
+            perror("bind failed"); 
+            exit(EXIT_FAILURE); 
+        } 
+        if (listen(server_fd, 3) < 0) 
+        { 
+            perror("listen"); 
+            exit(EXIT_FAILURE); 
+        } 
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
+                        (socklen_t*)&addrlen))<0) 
+        { 
+            perror("accept"); 
+            exit(EXIT_FAILURE); 
+        } 
+        valread = read( new_socket , buffer, 1024); 
+        printf("%s\n",buffer ); 
+        send(new_socket , hello , strlen(hello) , 0 ); 
+        printf("Hello message sent\n"); 
+    
+    // //Create a socket
+	// if((listen_fd = socket(AF_INET , SOCK_STREAM , 0 )) == -1)
+	// {
+	// 	fprintf(fp, "Could not create socket\n");
+    //     return -1;
+	// }
+
+	// fprintf(fp, "Socket created.\n");
+    // memset(&server, '0', sizeof(server));
+    // memset(sendBuffer, '0', sizeof(sendBuffer));
 	
 	
-	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_family = AF_INET;
-	server.sin_port = htons(8080);
+	// server.sin_addr.s_addr = INADDR_ANY;
+	// server.sin_family = AF_INET;
+	// server.sin_port = htons(8080);
 
-    bind(listen_fd, (struct sockaddr*)&server, sizeof(server));
-
-	listen(listen_fd, 3); 
+    // bind(listen_fd, (struct sockaddr*)&server, sizeof(server));
+	// listen(listen_fd, 3); 
     
     if (fp != NULL){
         while (1)
         {
             
-            //TODO: Insert daemon code here.
-            syslog (LOG_NOTICE, "First daemon running.");
-            conn_fd = accept(listen_fd, (struct sockaddr*)NULL, NULL);
-            fprintf(fp, "New socket connected");
+            //TODO: Insert daemon code here.int listen_fd = 0, conn_fd = 0;
+            // struct sockaddr_in server, client;
+            // char sendBuffer[100];
 
             int i=0,length;
             char buffer[BUF_LEN];
  
             // Step 3. Read buffer
             length = read(fd,buffer,BUF_LEN);
- 
+
             // Step 4. Process the events which has occurred 
             while(i<length){
                 struct inotify_event *event = (struct inotify_event *) &buffer[i];
@@ -142,35 +194,27 @@ int main()
                             int comp = strcmp(dot + 1, "seq");
                             if(comp == 0) {
                                 fprintf(fp, "The file %s was created.\n", event->name );
-                                if(send(conn_fd , event->name , strlen(event->name), 0) < 0)
+
+                                char command = 0;
+                                recv(new_socket, &command, 1, 0);
+
+                                if(command == '1')
                                 {
-                                    fprintf(fp, "Send failed\n");
-                                    return 1;
+                                    send(new_socket, event->name, strlen(event->name), 0);
                                 }
+
+                                // if(send(conn_fd , event->name , strlen(event->name), 0) < 0)
+                                // {
+                                //     fprintf(fp, "Send failed\n");
+                                //     return 1;
+                                // }
                                 fprintf(fp, "Data Send\n");
                             }
                         }
-                    }/*
-                    else if ( event->mask & IN_DELETE ) {
-                        if ( event->mask & IN_ISDIR ) {
-                            fprintf(fp, "The directory %s was deleted.\n", event->name );
-                        }
-                        else {
-                            fprintf(fp, "The file %s was deleted.\n", event->name );
-                        }
                     }
-                    else if ( event->mask & IN_MODIFY ) {
-                        if ( event->mask & IN_ISDIR ) {
-                            fprintf(fp, "The directory %s was modified.\n", event->name );
-                        }   
-                        else {
-                            fprintf(fp, "The file %s was modified.\n", event->name );
-                        }
-                    }*/
                 }
                 i += EVENT_SIZE + event->len;
             }
-
             fflush(fp);
         }
         
