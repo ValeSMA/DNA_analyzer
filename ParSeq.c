@@ -57,7 +57,7 @@ void main()
             //printf("min index %d\n",min_index);
             
             //t = clock();
-            windowing(min_index,reference_seq,refsize,pattern,pattern_size,&windows);
+            p_windowing(min_index,reference_seq,refsize,pattern,pattern_size,&windows);
             //t = clock()-t;
             //printf("Windowing time: %f\n",(double)t/(CLOCKS_PER_SEC / 1000));
 
