@@ -3,16 +3,6 @@
 int sock = 0, valread; 
 struct sockaddr_in serv_addr; 
 
- // Temporal socket test
-// void main()
-// {
-//     char filename[255];
-
-//     connection();
-//     request(filename);
-//     printf("New file %s", filename);
-// }
-
 /* Do handshake between client and server */
 int open_connection()
 {

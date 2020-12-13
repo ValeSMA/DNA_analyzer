@@ -14,7 +14,7 @@ void main()
     
     fill_frequency_table(reference_seq,refsize);
 
-    char filename[255];
+    char filename[255] = "\0";
     open_connection();
 
     while(1)
@@ -23,6 +23,9 @@ void main()
         printf("%s\n",filename);
         seqs = read_seq_file(filename,&nseqs);
         printf("%d\n",nseqs);
+
+        if(filename) {
+
 
         clock_t g;
         g = clock();
@@ -54,7 +57,7 @@ void main()
             //printf("min index %d\n",min_index);
             
             //t = clock();
-            windowing(min_index,reference_seq,refsize,pattern,pattern_size,&windows);
+            p_windowing(min_index,reference_seq,refsize,pattern,pattern_size,&windows);
             //t = clock()-t;
             //printf("Windowing time: %f\n",(double)t/(CLOCKS_PER_SEC / 1000));
 
@@ -63,9 +66,11 @@ void main()
             //t = clock()-t;
             //printf("Matching time: %f\n",(double)t/(CLOCKS_PER_SEC / 1000));
 
-            for(int i=0; i<matches.count; i++)
+            for(int j=0; j<matches.count; j++)
             {
-                printf("Found a match at index %d\n", matches.idx[i]);
+                /*for(int k=0; k<pattern_size; k++)
+                    printf("%c", reference_seq[matches.idx[j] + k]);*/
+                printf("Sequence[%d]: Found a match at index %d\n", i, matches.idx[j]);
                 total += pattern_size+1;
             }
 
@@ -90,11 +95,11 @@ void main()
         printf("%d mapped sequences\n",total_matches);
         printf("%d not mapped sequences\n",no_matches);
         printf("%lld Total characters matched\n", total);
-        printf("%lld percent of the reference coverered", (total/refsize)*100);
-
+        printf("%lld percentage of reference covered\n", (total * 100 /ref_total));
         for(int i=0; i<nseqs; i++)
             free(seqs[i].seq);
         free(seqs);
+        }
     }
     free(reference_seq);
 }

@@ -89,17 +89,6 @@ int main()
             fprintf(fp, "Watching : %s\n", path_to_be_watched[0]);
     }
 
-
-
-
-
-
-
-
-
-
-
-
         int server_fd, new_socket, valread; 
         struct sockaddr_in address; 
         int opt = 1; 
@@ -148,33 +137,9 @@ int main()
         send(new_socket , hello , strlen(hello) , 0 ); 
         printf("Hello message sent\n"); 
     
-    // //Create a socket
-	// if((listen_fd = socket(AF_INET , SOCK_STREAM , 0 )) == -1)
-	// {
-	// 	fprintf(fp, "Could not create socket\n");
-    //     return -1;
-	// }
-
-	// fprintf(fp, "Socket created.\n");
-    // memset(&server, '0', sizeof(server));
-    // memset(sendBuffer, '0', sizeof(sendBuffer));
-	
-	
-	// server.sin_addr.s_addr = INADDR_ANY;
-	// server.sin_family = AF_INET;
-	// server.sin_port = htons(8080);
-
-    // bind(listen_fd, (struct sockaddr*)&server, sizeof(server));
-	// listen(listen_fd, 3); 
-    
     if (fp != NULL){
         while (1)
         {
-            
-            //TODO: Insert daemon code here.int listen_fd = 0, conn_fd = 0;
-            // struct sockaddr_in server, client;
-            // char sendBuffer[100];
-
             int i=0,length;
             char buffer[BUF_LEN];
  
@@ -195,17 +160,7 @@ int main()
                             int comp = strcmp(dot + 1, "seq");
                             if(comp == 0) {
                                 fprintf(fp, "The file %s was created.\n", event->name );
-
-                                // char command = 0;
-                                // recv(new_socket, &command, 1, 0);
-
-                                send(new_socket, event->name, strlen(event->name), 0);
-                                
-                                // if(send(conn_fd , event->name , strlen(event->name), 0) < 0)
-                                // {
-                                //     fprintf(fp, "Send failed\n");
-                                //     return 1;
-                                // }
+                                send(new_socket, event->name, strlen(event->name), 0);              
                                 fprintf(fp, "Data Send\n");
                             }
                         }
